@@ -20,7 +20,7 @@ outStatement = ''
 
 GAME = 'bird' # the name of the game being played for log files
 AGENT = 'doubleDQN'
-DIFFICULTY = 'general'
+DIFFICULTY = 'easy'
 ACTIONS = 2 # number of valid actions
 GAMMA = 0.99 # decay rate of past observations
 
@@ -220,7 +220,7 @@ def trainNetwork(q_network, sess):
     while "flappy bird" != "angry bird":
 
         if (t == 10001):
-            t = 4050001
+            t = 240001
         target_network_update_flag = 'No'
         # choose an action epsilon greedily
         readout_t = q_network.readout.eval(feed_dict={q_network.s : [s_t]})[0]
@@ -347,7 +347,7 @@ def trainNetwork(q_network, sess):
                 fout.writelines(outStatement)
 
         if(score != 0 and score % 25 == 0):
-            with open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY+ outputFile, 'a') as fout:
+            with open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + outputFile, 'a') as fout:
                 fout.writelines(outStatement)
 
         if t % 10000 <= 100:
