@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import sys
 import random
@@ -7,6 +8,8 @@ import game.flappy_bird_utils
 import pygame.surfarray as surfarray
 from pygame.locals import *
 from itertools import cycle
+
+os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 def getRandomPipeGapSize():
     """returns a randomly generated number to be used as PIPEGAPSIZE"""
