@@ -38,7 +38,7 @@ GAMMA = 0.99 # decay rate of past observations
 # printing
 outputFile = "/output.txt"
 a_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/readout.txt", 'a+')
-h_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/hidden.txt", 'a+')
+# h_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/hidden.txt", 'a+')
 out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output.txt", 'a+')
 OBSERVE = 10000
 EXPLORE = 3000000
