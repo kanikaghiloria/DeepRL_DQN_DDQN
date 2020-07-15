@@ -1,0 +1,7 @@
+TIMESTEP: 1306/ STATE: test/ ACTION: 1/ FINAL SCORE: 34
+TIMESTEP: 10801/ STATE: test/ ACTION: 1/ FINAL SCORE: 256
+TIMESTEP: 22504/ STATE: test/ ACTION: 0/ FINAL SCORE: 315
+Total TIMESTEP: 22504/ total Games: 3/ Maximum Score: 315/ Minimum Score: 34/ Average Score: 201.66666666666666
+================================= NEW EVALUATION =================================
+TIMESTEP: 2239/ GAME: 1/ ACTION: 0/ FINAL SCORE: 59
+Total TIMESTEP: 2239/ total Games: 1/ Maximum Score: 59/ Minimum Score: 59/ Average Score: 59
