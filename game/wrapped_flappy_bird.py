@@ -9,12 +9,12 @@ import pygame.surfarray as surfarray
 from pygame.locals import *
 from itertools import cycle
 
-os.environ["SDL_VIDEODRIVER"] = "dummy"
+# os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 def getRandomPipeGapSize():
     """returns a randomly generated number to be used as PIPEGAPSIZE"""
     gaps = [100, 130, 160, 190, 220, 230]
-    # gaps = [100, 230]
+    # gaps = [easy, 230]
     index = random.randint(0, len(gaps)-1)
     # print("gaps[index]:", gaps[index])
     return gaps[index]
@@ -29,7 +29,7 @@ SCREEN = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
 pygame.display.set_caption('Flappy Bird')
 
 IMAGES, SOUNDS, HITMASKS = flappy_bird_utils.load()
-# PIPEGAPSIZE = 100 # gap between upper and lower part of pipe
+# PIPEGAPSIZE = easy # gap between upper and lower part of pipe
 PIPEGAPSIZE = getRandomPipeGapSize() # gap between upper and lower part of pipe
 BASEY = SCREENHEIGHT * 0.79
 

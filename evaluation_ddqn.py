@@ -22,10 +22,10 @@ outStatement = ''
 
 GAME = 'bird' # the name of the game being played for log files
 AGENT = 'doubleDQN'
-DIFFICULTY = 'general'
+DIFFICULTY = 'medium'
 ACTIONS = 2 # number of valid actions
 GAMMA = 0.99 # decay rate of past observations
-NUMEBEROFGAMES = 1
+NUMEBEROFGAMES = 2
 ############################### UNCOMMENT THIS SECTION FOR TESTING
 # OBSERVE = 1000000. # timesteps to observe before training
 # EXPLORE = 2000000. # frames over which to anneal epsilon
@@ -363,7 +363,7 @@ def testNetwork(q_network, sess):
         #     with open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY+ outputFile, 'a') as fout:
         #         fout.writelines(outStatement)
 
-        # if t % 10000 <= 100:
+        # if t % 10000 <= easy:
         #     a_file.write(",".join([str(x) for x in readout_t]) + '\n')
         #     # h_file.write(",".join([str(x) for x in q_network.h_fc1.eval(feed_dict={q_network.s:[s_t]})[0]]) + '\n')
 

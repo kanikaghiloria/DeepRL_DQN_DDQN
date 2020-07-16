@@ -1,0 +1,9 @@
+================================= NEW EVALUATION =================================
+TIMESTEP: 18/ GAME: 1/ ACTION: 0/ FINAL SCORE: 0
+TIMESTEP: 37/ GAME: 2/ ACTION: 0/ FINAL SCORE: 0
+Total TIMESTEP: 37/ total Games: 2/ Maximum Score: 0/ Minimum Score: 0/ Average Score: 0
+================================= NEW EVALUATION =================================
+TIMESTEP: 18/ GAME: 1/ ACTION: 0/ FINAL SCORE: 0
+TIMESTEP: 37/ GAME: 2/ ACTION: 0/ FINAL SCORE: 0
+Total TIMESTEP: 37/ total Games: 2/ Maximum Score: 0/ Minimum Score: 0/ Average Score: 0
+================================= NEW EVALUATION =================================

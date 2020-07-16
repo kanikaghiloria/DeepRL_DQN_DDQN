@@ -219,8 +219,8 @@ def trainNetwork(q_network, sess):
     # t = 10000
     while "flappy bird" != "angry bird":
 
-        # if (t == 10001):
-        #     t = 240001
+        if (t == 10001):
+            t = 13001
         target_network_update_flag = 'No'
         # choose an action epsilon greedily
         readout_t = q_network.readout.eval(feed_dict={q_network.s : [s_t]})[0]

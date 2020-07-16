@@ -41,7 +41,6 @@ out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output_test.
 # h_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/hidden.txt", 'a+')
 # out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output.txt", 'a+')
 # OBSERVE = 10000
-# # OBSERVE = 100
 # EXPLORE = 3000000
 # FINAL_EPSILON = 0.0001
 # INITIAL_EPSILON = 0.1

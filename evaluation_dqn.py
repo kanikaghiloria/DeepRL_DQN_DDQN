@@ -44,7 +44,7 @@ out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output_test.
 # h_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/hidden.txt", 'a+')
 # out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output.txt", 'a+')
 # OBSERVE = 10000
-# # OBSERVE = 100
+# # OBSERVE = easy
 # EXPLORE = 3000000
 # FINAL_EPSILON = 0.0001
 # INITIAL_EPSILON = 0.1
@@ -263,7 +263,7 @@ def trainNetwork(s, readout, h_fc1, sess):
         #     with open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + outputFile, 'a') as fout:
         #         fout.writelines(outStatement)
 
-        # if t % 10000 <= 100:
+        # if t % 10000 <= easy:
         #     a_file.write(",".join([str(x) for x in readout_t]) + '\n')
         #     h_file.write(",".join([str(x) for x in h_fc1.eval(feed_dict={s:[s_t]})[0]]) + '\n')
         #
