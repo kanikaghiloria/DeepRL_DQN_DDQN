@@ -25,32 +25,15 @@ ACTIONS = 2 # number of valid actions
 GAMMA = 0.99 # decay rate of past observations
 DIFFICULTY = 'general'
 AGENT = 'DQN'
-NUMEBEROFGAMES = 2
+NUMEBEROFGAMES = 100
 
 ############################### UNCOMMENT THIS SECTION FOR TESTING
-# OBSERVE = 1000000. # timesteps to observe before training
-# EXPLORE = 2000000. # frames over which to anneal epsilon
-# FINAL_EPSILON = 0.0001 # final value of epsilon
-# INITIAL_EPSILON = 0.0001 # starting value of epsilon
 outputFile = "/output_test.txt"
-a_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/readout_test.txt", 'a+')
-h_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/hidden_test.txt", 'a+')
+# a_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/readout_test.txt", 'a+')
+# h_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/hidden_test.txt", 'a+')
 out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output_test.txt", 'a+')
 ###############################
 
-# printing
-# outputFile = "/output.txt"
-# a_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/readout.txt", 'a+')
-# h_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/hidden.txt", 'a+')
-# out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output.txt", 'a+')
-# OBSERVE = 10000
-# # OBSERVE = easy
-# EXPLORE = 3000000
-# FINAL_EPSILON = 0.0001
-# INITIAL_EPSILON = 0.1
-# # INITIAL_EPSILON = 0.00009999999983673486
-# REPLAY_MEMORY = 50000 # number of previous transitions to remember
-# BATCH = 32 # size of minibatch
 FRAME_PER_ACTION = 1
 
 def weight_variable(shape):
@@ -107,7 +90,7 @@ def createNetwork():
 
     return s, readout, h_fc1
 
-def trainNetwork(s, readout, h_fc1, sess):
+def testNetwork(s, readout, h_fc1, sess):
     # define the cost function
 
     with open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + outputFile, 'a') as fout:
@@ -123,9 +106,6 @@ def trainNetwork(s, readout, h_fc1, sess):
     # open up a game state to communicate with emulator
     game_state = game.GameState(difficulty=DIFFICULTY)
 
-    # store the previous observations in replay memory
-    # D = deque()
-    # get the first state by doing nothing and preprocess the image to 80x80x4
     do_nothing = np.zeros(ACTIONS)
     do_nothing[0] = 1
     x_t, r_0, terminal, s1, s2 = game_state.frame_step(do_nothing)
@@ -146,9 +126,6 @@ def trainNetwork(s, readout, h_fc1, sess):
     else:
         print("Could not find old network weights")
 
-    # start training
-    # epsilon = INITIAL_EPSILON
-    # random_action = 0
     t = 0
     scores = []
     currentGame = 1
@@ -161,21 +138,8 @@ def trainNetwork(s, readout, h_fc1, sess):
         if t % FRAME_PER_ACTION == 0:
             action_index = np.argmax(readout_t)
             a_t[action_index] = 1
-            # if random.random() <= epsilon:
-            #     print("----------Random Action----------")
-            #     random_action = random_action + 1
-            #     action_index = random.randrange(ACTIONS)
-            #     a_t[random.randrange(ACTIONS)] = 1
-            # else:
-            #     action_index = np.argmax(readout_t)
-            #     a_t[action_index] = 1
         else:
             a_t[0] = 1 # do nothing
-
-        # scale down epsilon
-        # if epsilon > FINAL_EPSILON and t > OBSERVE:
-        #     epsilon -= (INITIAL_EPSILON - FINAL_EPSILON) / EXPLORE
-
         # run the selected action and observe next state and reward
         # x_t1_colored, r_t, terminal = game_state.frame_step(a_t)
         x_t1_colored, r_t, terminal, score, final_score = game_state.frame_step(a_t)
@@ -187,70 +151,15 @@ def trainNetwork(s, readout, h_fc1, sess):
         #s_t1 = np.append(x_t1, s_t[:,:,1:], axis = 2)
         s_t1 = np.append(x_t1, s_t[:, :, :3], axis=2)
 
-        # store the transition in D
-        # D.append((s_t, a_t, r_t, s_t1, terminal))
-        # if len(D) > REPLAY_MEMORY:
-        #     D.popleft()
-
-        # only train if done observing
-        # if t > OBSERVE:
-        #     # sample a minibatch to train on
-        #     minibatch = random.sample(D, BATCH)
-        #
-        #     # get the batch variables
-        #     s_j_batch = [d[0] for d in minibatch]
-        #     a_batch = [d[1] for d in minibatch]
-        #     r_batch = [d[2] for d in minibatch]
-        #     s_j1_batch = [d[3] for d in minibatch]
-        #
-        #     y_batch = []
-        #     readout_j1_batch = readout.eval(feed_dict = {s : s_j1_batch})
-        #     for i in range(0, len(minibatch)):
-        #         terminal = minibatch[i][4]
-        #         # if terminal, only equals reward
-        #         if terminal:
-        #             y_batch.append(r_batch[i])
-        #         else:
-        #             y_batch.append(r_batch[i] + GAMMA * np.max(readout_j1_batch[i]))
-        #
-        #     # perform gradient step
-        #     train_step.run(feed_dict = {
-        #         y : y_batch,
-        #         a : a_batch,
-        #         s : s_j_batch}
-        #     )
-
         # update the old values
         s_t = s_t1
         t += 1
 
-        # save progress every 10000 iterations
-        # if t % 10000 == 0:
-        #     saver.save(sess, 'saved_networks/' + AGENT + "/" + DIFFICULTY + "/" + GAME + '-dqn', global_step = t)
-
         # print info
         state = "test"
-        # if t <= OBSERVE:
-        #     state = "observe"
-        # elif t > OBSERVE and t <= OBSERVE + EXPLORE:
-        #     state = "explore"
-        # else:
-        #     state = "train"
-
         print("TIMESTEP: ", t, "/ GAME: ", currentGame, "/ STATE: ", state, "/ ACTION: ", action_index, "/ SCORE: ", score)
         # write info to files
 
-        # outStatement = "TIMESTEP: ", str(t), "/ STATE: ", state, "/ EPSILON: ", str(epsilon), "/ ACTION: ", str(action_index), \
-        #        "/ REWARD: ", str(r_t), "/ SCORE: ", str(score), \
-        #        "/ Q_MAX: %e" % np.max(readout_t), "\n"
-        # # out_file.writelines(line)
-        # if(final_score > 0):
-        #     # print("score: ", score)
-        #     outStatement = "TIMESTEP: ", str(t), "/ STATE: ", state, "/ EPSILON: ", str(epsilon), "/ ACTION: ", \
-        #                    str(action_index), "/ REWARD: ", str(r_t), "/ FINAL SCORE: ", str(final_score), \
-        #                    "/RANDOM ACTIONS: ", str(random_action),"/ Q_MAX: %e" % np.max(readout_t), "\n"
-        #     with open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + outputFile, 'a') as fout:
-        #         fout.writelines(outStatement)
         if terminal:
             outStatement = "TIMESTEP: ", str(t), "/ GAME: ", str(currentGame), "/ ACTION: ", \
                            str(action_index), "/ FINAL SCORE: ", str(final_score), "\n"
@@ -258,16 +167,6 @@ def trainNetwork(s, readout, h_fc1, sess):
                 fout.writelines(outStatement)
             scores.append(final_score)
             currentGame = currentGame + 1
-
-        # if(score != 0 and score % 25 == 0):
-        #     with open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + outputFile, 'a') as fout:
-        #         fout.writelines(outStatement)
-
-        # if t % 10000 <= easy:
-        #     a_file.write(",".join([str(x) for x in readout_t]) + '\n')
-        #     h_file.write(",".join([str(x) for x in h_fc1.eval(feed_dict={s:[s_t]})[0]]) + '\n')
-        #
-        #     cv2.imwrite("logs_tetris/frame" + str(t) + ".png", x_t1)
 
     maxScore = max(scores)
     minScore = min(scores)
@@ -281,9 +180,8 @@ def trainNetwork(s, readout, h_fc1, sess):
 
 def playGame():
     sess = tf.InteractiveSession()
-    # sess = tfc.InteractiveSession()
     s, readout, h_fc1 = createNetwork()
-    trainNetwork(s, readout, h_fc1, sess)
+    testNetwork(s, readout, h_fc1, sess)
 
 def printLine():
     print ("outStatement: ", outStatement)
@@ -292,14 +190,6 @@ def main():
     # try:
     playGame()
     atexit.register(printLine)
-    # finally:
-    #     with open("logs_" + GAME + "/output.txt", 'a') as fout:
-    #         fout.writelines(outStatement)
-    #         print ("outStatement: ", outStatement)
-    # except:
-    #     with open("logs_" + GAME + "/output.txt", 'a') as fout:
-    #         fout.writelines(outStatement)
-    #         print ("outStatement: ", outStatement)
 
 
 if __name__ == "__main__":
