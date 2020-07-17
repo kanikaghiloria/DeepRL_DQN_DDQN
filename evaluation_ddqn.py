@@ -22,32 +22,21 @@ outStatement = ''
 
 GAME = 'bird' # the name of the game being played for log files
 AGENT = 'doubleDQN'
-DIFFICULTY = 'medium'
+DIFFICULTY = 'easy'
 ACTIONS = 2 # number of valid actions
-GAMMA = 0.99 # decay rate of past observations
-NUMEBEROFGAMES = 2
+# GAMMA = 0.99 # decay rate of past observations
+NUMEBEROFGAMES = 100
 ############################### UNCOMMENT THIS SECTION FOR TESTING
 # OBSERVE = 1000000. # timesteps to observe before training
 # EXPLORE = 2000000. # frames over which to anneal epsilon
 # FINAL_EPSILON = 0.0001 # final value of epsilon
 # INITIAL_EPSILON = 0.0001 # starting value of epsilon
 outputFile = "/output_test.txt"
-a_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/readout_test.txt", 'a+')
+# a_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/readout_test.txt", 'a+')
 # h_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/hidden_test.txt", 'a+')
 out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output_test.txt", 'a+')
 ###############################
 
-# printing
-# outputFile = "/output.txt"
-# a_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/readout.txt", 'a+')
-# h_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/hidden.txt", 'a+')
-# out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output.txt", 'a+')
-# OBSERVE = 10000
-# EXPLORE = 3000000
-# FINAL_EPSILON = 0.0001
-# INITIAL_EPSILON = 0.1
-# REPLAY_MEMORY = 50000 # number of previous transitions to remember
-# BATCH = 32 # size of minibatch
 FRAME_PER_ACTION = 1
 
 def weight_variable(shape):
@@ -172,27 +161,13 @@ class QNetwork():
         self.targetNetworkUpdate();
         self.session.run(self.update_p)
 
-def testNetwork(q_network, sess):
+def evaluate(q_network, sess):
     with open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + outputFile, 'a') as fout:
         fout.writelines("================================= NEW EVALUATION =================================")
         fout.writelines("\n")
-    # define the cost function
-    # a = tf.placeholder("float", [None, ACTIONS])
-    # y = tf.placeholder("float", [None])
-    # readout_action = tf.reduce_sum(tf.multiply(q_network.readout, a), reduction_indices=1)
-    # cost = tf.reduce_mean(tf.square(y - readout_action))
-    # train_step = tf.train.AdamOptimizer(1e-6).minimize(cost)
 
     # open up a game state to communicate with emulator
     game_state = game.GameState(difficulty=DIFFICULTY)
-
-    # store the previous observations in replay memory
-    # experienceReplay = deque()
-
-    # # printing
-    # a_file = open("logs_" + GAME + "/readout.txt", 'w')
-    # h_file = open("logs_" + GAME + "/hidden.txt", 'w')
-    # out_file = open("logs_" + GAME + "/output.txt", 'w')
 
     # get the first state by doing nothing and preprocess the image to 80x80x4
     do_nothing = np.zeros(ACTIONS)
@@ -216,133 +191,36 @@ def testNetwork(q_network, sess):
     else:
         print("Could not find old network weights")
 
-    # start training
-    # epsilon = INITIAL_EPSILON
-    # random_action = 0
     t = 0
     scores = []
     currentGame = 1
     # while "flappy bird" != "angry bird":
     while currentGame <= NUMEBEROFGAMES:
 
-        # if (t == 10001):
-        #     t = 4050001
-        # target_network_update_flag = 'No'
-        # choose an action epsilon greedily
         readout_t = q_network.readout.eval(feed_dict={q_network.s : [s_t]})[0]
         a_t = np.zeros([ACTIONS])
         action_index = 0
         if t % FRAME_PER_ACTION == 0:
             action_index = np.argmax(readout_t)
             a_t[action_index] = 1
-            # if random.random() <= epsilon:
-            #     # exploration
-            #     print("----------Random Action----------")
-            #     random_action = random_action + 1
-            #     action_index = random.randrange(ACTIONS)
-            #     a_t[random.randrange(ACTIONS)] = 1
-            # else:
-            #     # exploitation
-            #     action_index = np.argmax(readout_t)
-            #     a_t[action_index] = 1
         else:
             a_t[0] = 1 # do nothing
 
-        # scale down epsilon
-        # if epsilon > FINAL_EPSILON and t > OBSERVE:
-        #     epsilon -= (INITIAL_EPSILON - FINAL_EPSILON) / EXPLORE
-        # if t > OBSERVE:
-        #     epsilon = (INITIAL_EPSILON * GAMMA) * (0.5 * (1 + np.cos((2 * np.math.pi * t) / EXPLORE)))
-
         # run the selected action and observe next state and reward
-        # x_t1_colored, r_t, terminal = game_state.frame_step(a_t)
         x_t1_colored, r_t, terminal, score, final_score = game_state.frame_step(a_t)
-        # if(score > 0):
-        #     print (score)
         x_t1 = cv2.cvtColor(cv2.resize(x_t1_colored, (80, 80)), cv2.COLOR_BGR2GRAY)
         ret, x_t1 = cv2.threshold(x_t1, 1, 255, cv2.THRESH_BINARY)
         x_t1 = np.reshape(x_t1, (80, 80, 1))
-        #s_t1 = np.append(x_t1, s_t[:,:,1:], axis = 2)
         s_t1 = np.append(x_t1, s_t[:, :, :3], axis=2)
-
-        # store the transition in experienceReplay
-        # experienceReplay.append((s_t, a_t, r_t, s_t1, terminal))
-        # if len(experienceReplay) > REPLAY_MEMORY:
-        #     experienceReplay.popleft()
-
-        # only train if done observing
-        # if t > OBSERVE:
-        #     # sample a minibatch to train on
-        #     minibatch = random.sample(experienceReplay, BATCH)
-        #
-        #     # get the batch variables
-        #     currentState_batch = [d[0] for d in minibatch]
-        #     action_batch = [d[1] for d in minibatch]
-        #     reward_batch = [d[2] for d in minibatch]
-        #     nextState_batch = [d[3] for d in minibatch]
-        #     done_batch = [d[4] for d in minibatch]
-        #
-        #     y_batch = []
-        #     # get actions using q network
-        #     q_network_qValues = q_network.readout.eval(feed_dict = {q_network.s : nextState_batch})
-        #     q_network_actions = np.argmax(q_network_qValues, axis=1)
-        #
-        #     # Calculate estimated Q-values with q_network_actions by using target network
-        #     target_network_qValues = q_network.targetNetwork.readout.eval(feed_dict = {q_network.targetNetwork.s:nextState_batch})
-        #     target_network_q = [np.take(target_network_qValues[i], q_network_actions[i]) for i in range(BATCH)]
-        #
-        #     # Update Q-values of Q-network
-        #     q_network_update_q = [r + GAMMA * q if not d else r for r, q, d in zip(reward_batch, target_network_q, done_batch)]
-        #
-        #     # for i in range(0, len(minibatch)):
-        #     #     terminal = minibatch[i][4]
-        #     #     # if terminal, only equals reward
-        #     #     if terminal:
-        #     #         y_batch.append(reward_batch[i])
-        #     #     else:
-        #     #         y_batch.append(reward_batch[i] + GAMMA * np.max(q_network_qValues[i]))
-        #
-        #     # perform gradient step
-        #     indices = [[i, action_batch[i]] for i in range(BATCH)]
-        #     q_network.train_step.run(feed_dict = {
-        #         # y : y_batch,
-        #         q_network.y : q_network_update_q,
-        #         q_network.a : action_batch,
-        #         # q_network.a : indices,
-        #         q_network.s : currentState_batch}
-        #     )
-        # if (t%1000) == 0 and t>0:
-        #     q_network.update()
-        #     target_network_update_flag = 'Yes'
-        #     # with open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + outputFile, 'a') as fout:
-        #     #     s = '=================== TARGET NETWORK UPDATED =========================', "\n"
-        #     print ('=================== TARGET NETWORK UPDATED =========================')
-        #     #     fout.writelines(s)
-
         # update the old values
         s_t = s_t1
         t += 1
 
-
-        # save progress every 10000 iterations
-        # if t % 10000 == 0:
-        #     saver.save(sess, 'saved_networks/' + AGENT + "/" + DIFFICULTY + "/" + GAME + '-ddqn', global_step = t)
-
         # print info
         state = "test"
-        # state = ""
-        # if t <= OBSERVE:
-        #     state = "observe"
-        # elif t > OBSERVE and t <= OBSERVE + EXPLORE:
-        #     state = "explore"
-        # else:
-        #     state = "train"
 
         print("TIMESTEP: ", t, "/ GAME: ", currentGame, "/ STATE: ", state, "/ ACTION: ", action_index, "/ SCORE: ", score)
         # write info to files
-
-        # outStatement = "TIMESTEP: ", str(t), "/ STATE: ", state, "/ ACTION: ", str(action_index), "/ SCORE: ", str(score), "\n"
-        # out_file.writelines(line)
 
         if terminal:
             outStatement = "TIMESTEP: ", str(t), "/ GAME: ", str(currentGame), "/ ACTION: ", \
@@ -351,23 +229,7 @@ def testNetwork(q_network, sess):
                 fout.writelines(outStatement)
             scores.append(final_score)
             currentGame = currentGame + 1
-        # if(final_score > 0):
-        #     # print("score: ", score)
-        #     outStatement = "TIMESTEP: ", str(t), "/ STATE: ", state, "/ EPSILON: ", str(epsilon), "/ ACTION: ", \
-        #                    str(action_index), "/ REWARD: ", str(r_t), "/ FINAL SCORE: ", str(final_score), \
-        #                    "/RANDOM ACTIONS: ", str(random_action),"/ Q_MAX: %e" % np.max(readout_t), "\n"
-        #     with open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + outputFile, 'a') as fout:
-        #         fout.writelines(outStatement)
 
-        # if(score != 0 and score % 25 == 0):
-        #     with open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY+ outputFile, 'a') as fout:
-        #         fout.writelines(outStatement)
-
-        # if t % 10000 <= easy:
-        #     a_file.write(",".join([str(x) for x in readout_t]) + '\n')
-        #     # h_file.write(",".join([str(x) for x in q_network.h_fc1.eval(feed_dict={q_network.s:[s_t]})[0]]) + '\n')
-
-            # cv2.imwrite("logs_tetris/frame" + str(t) + ".png", x_t1)
     maxScore = max(scores)
     minScore = min(scores)
     meanScore = mean(scores)
@@ -380,11 +242,7 @@ def playGame():
     sess = tf.InteractiveSession()
     sess.run(tf.global_variables_initializer())
     q_network = QNetwork(sess)
-    # q_network.set_session(sess)
-    # sess = tfc.InteractiveSession()
-    # s, readout, h_fc1 = createNetwork()
-    # trainNetwork(s, readout, h_fc1, sess)
-    testNetwork(q_network, sess)
+    evaluate(q_network, sess)
 
 def printLine():
     print ("outStatement: ", outStatement)
@@ -393,15 +251,6 @@ def main():
     # try:
     playGame()
     atexit.register(printLine)
-    # finally:
-    #     with open("logs_" + GAME + "/output.txt", 'a') as fout:
-    #         fout.writelines(outStatement)
-    #         print ("outStatement: ", outStatement)
-    # except:
-    #     with open("logs_" + GAME + "/output.txt", 'a') as fout:
-    #         fout.writelines(outStatement)
-    #         print ("outStatement: ", outStatement)
-
 
 if __name__ == "__main__":
     main()

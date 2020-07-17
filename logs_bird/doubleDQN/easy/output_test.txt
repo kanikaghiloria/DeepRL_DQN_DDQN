@@ -1,0 +1,2 @@
+================================= NEW EVALUATION =================================
+TIMESTEP:  507930 / GAME:  1 / STATE:  test / ACTION:  0 / SCORE:  13727

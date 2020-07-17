@@ -23,7 +23,7 @@ outStatement = ''
 GAME = 'bird' # the name of the game being played for log files
 ACTIONS = 2 # number of valid actions
 GAMMA = 0.99 # decay rate of past observations
-DIFFICULTY = 'general'
+DIFFICULTY = 'easy'
 AGENT = 'DQN'
 NUMEBEROFGAMES = 100
 
@@ -90,7 +90,7 @@ def createNetwork():
 
     return s, readout, h_fc1
 
-def testNetwork(s, readout, h_fc1, sess):
+def evaluate(s, readout, h_fc1, sess):
     # define the cost function
 
     with open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + outputFile, 'a') as fout:
@@ -181,7 +181,7 @@ def testNetwork(s, readout, h_fc1, sess):
 def playGame():
     sess = tf.InteractiveSession()
     s, readout, h_fc1 = createNetwork()
-    testNetwork(s, readout, h_fc1, sess)
+    evaluate(s, readout, h_fc1, sess)
 
 def printLine():
     print ("outStatement: ", outStatement)
