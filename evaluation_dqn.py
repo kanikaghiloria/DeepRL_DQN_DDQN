@@ -23,7 +23,7 @@ outStatement = ''
 GAME = 'bird' # the name of the game being played for log files
 ACTIONS = 2 # number of valid actions
 GAMMA = 0.99 # decay rate of past observations
-DIFFICULTY = 'easy'
+DIFFICULTY = 'hard'
 AGENT = 'DQN'
 NUMEBEROFGAMES = 100
 
