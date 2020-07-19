@@ -3,3 +3,4 @@
 TIMESTEP: 207027/ GAME: 1/ ACTION: 0/ FINAL SCORE: 5594
 ================================= NEW EVALUATION =================================
 TIMESTEP: 382665/ GAME: 1/ ACTION: 0/ FINAL SCORE: 10341
+TIMESTEP:  1075345 / GAME:  2 / STATE:  test / ACTION:  0 / SCORE:  18720

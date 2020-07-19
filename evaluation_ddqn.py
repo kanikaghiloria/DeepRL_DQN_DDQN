@@ -22,7 +22,7 @@ outStatement = ''
 
 GAME = 'bird' # the name of the game being played for log files
 AGENT = 'doubleDQN'
-DIFFICULTY = 'easy'
+DIFFICULTY = 'hard'
 ACTIONS = 2 # number of valid actions
 # GAMMA = 0.99 # decay rate of past observations
 NUMEBEROFGAMES = 100
@@ -235,8 +235,10 @@ def evaluate(q_network, sess):
     meanScore = mean(scores)
     lastOutStatement = "Total TIMESTEP: ", str(t), "/ total Games: ", str(NUMEBEROFGAMES), "/ Maximum Score: ", \
                    str(maxScore), "/ Minimum Score: ", str(minScore), "/ Average Score: ", str(meanScore), "\n"
+
     with open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + outputFile, 'a') as fout:
         fout.writelines(lastOutStatement)
+    print(lastOutStatement)
 
 def playGame():
     sess = tf.InteractiveSession()
