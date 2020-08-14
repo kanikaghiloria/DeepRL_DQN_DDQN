@@ -43,24 +43,43 @@ PLAYER_INDEX_GEN = cycle([0, 1, 2, 1])
 
 
 class GameState:
-    def __init__(self, difficulty):
+    def __init__(self, difficulty, test_env):
         self.score = self.playerIndex = self.loopIter = 0
         self.playerx = int(SCREENWIDTH * 0.2)
         self.playery = int((SCREENHEIGHT - PLAYER_HEIGHT) / 2)
         self.basex = 0
         self.baseShift = IMAGES['base'].get_width() - BACKGROUND_WIDTH
         self.difficulty = difficulty
+        self.test_env = test_env
 
-        newPipe1 = getRandomPipe(self.difficulty)
-        newPipe2 = getRandomPipe(self.difficulty)
-        self.upperPipes = [
-            {'x': SCREENWIDTH, 'y': newPipe1[0]['y']},
-            {'x': SCREENWIDTH + (SCREENWIDTH / 2), 'y': newPipe2[0]['y']},
-        ]
-        self.lowerPipes = [
-            {'x': SCREENWIDTH, 'y': newPipe1[1]['y']},
-            {'x': SCREENWIDTH + (SCREENWIDTH / 2), 'y': newPipe2[1]['y']},
-        ]
+        if(self.test_env == True):
+            newPipe1 = getRandomPipe(self.difficulty)
+            newPipe2 = getRandomPipe(self.difficulty)
+            newPipe3 = getRandomPipe(self.difficulty)
+            self.upperPipes = [
+                {'x': SCREENWIDTH, 'y': newPipe1[0]['y']},
+                # {'x': SCREENWIDTH + (SCREENWIDTH / 2.5), 'y': newPipe2[0]['y']},
+                # {'x': SCREENWIDTH + (SCREENWIDTH / 2.5), 'y': newPipe3[0]['y']},
+
+                # {'x': SCREENWIDTH + (SCREENWIDTH / 2), 'y': newPipe2[0]['y']},
+            ]
+            self.lowerPipes = [
+                {'x': SCREENWIDTH, 'y': newPipe1[1]['y']},
+                # {'x': SCREENWIDTH + (SCREENWIDTH / 2.5), 'y': newPipe2[1]['y']},
+                # {'x': SCREENWIDTH + (SCREENWIDTH / 2.5), 'y': newPipe3[1]['y']},
+                # {'x': SCREENWIDTH + (SCREENWIDTH / 2), 'y': newPipe2[1]['y']},
+            ]
+        else:
+            newPipe1 = getRandomPipe(self.difficulty)
+            newPipe2 = getRandomPipe(self.difficulty)
+            self.upperPipes = [
+                {'x': SCREENWIDTH, 'y': newPipe1[0]['y']},
+                {'x': SCREENWIDTH + (SCREENWIDTH / 2), 'y': newPipe2[0]['y']},
+            ]
+            self.lowerPipes = [
+                {'x': SCREENWIDTH, 'y': newPipe1[1]['y']},
+                {'x': SCREENWIDTH + (SCREENWIDTH / 2), 'y': newPipe2[1]['y']},
+            ]
 
         # player velocity, max velocity, downward accleration, accleration on flap
         self.pipeVelX = -4
@@ -121,8 +140,11 @@ class GameState:
         # add new pipe when first pipe is about to touch left of screen
         if 0 < self.upperPipes[0]['x'] < 5:
             newPipe = getRandomPipe(self.difficulty)
+            # newPipe2 = getRandomPipe(self.difficulty)
             self.upperPipes.append(newPipe[0])
             self.lowerPipes.append(newPipe[1])
+            # self.upperPipes.append(newPipe2[0])
+            # self.lowerPipes.append(newPipe2[1])
 
         # remove first pipe if its out of the screen
         if self.upperPipes[0]['x'] < -PIPE_WIDTH:
@@ -139,7 +161,7 @@ class GameState:
             terminal = True
             final_score = self.score
             # print(self.score)
-            self.__init__(self.difficulty)
+            self.__init__(self.difficulty, self.test_env)
             reward = -1
 
         # draw sprites

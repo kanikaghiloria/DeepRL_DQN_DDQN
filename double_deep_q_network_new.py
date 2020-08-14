@@ -20,7 +20,7 @@ outStatement = ''
 
 GAME = 'bird' # the name of the game being played for log files
 AGENT = 'doubleDQN'
-DIFFICULTY = 'medium'
+DIFFICULTY = 'general'
 ACTIONS = 2 # number of valid actions
 GAMMA = 0.99 # decay rate of past observations
 
@@ -42,6 +42,7 @@ a_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/readout.txt", 
 out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output.txt", 'a+')
 OBSERVE = 10000
 EXPLORE = 3000000
+TARGET_UPDATE_THRESHOLD = 1000
 FINAL_EPSILON = 0.0001
 INITIAL_EPSILON = 0.1
 REPLAY_MEMORY = 50000 # number of previous transitions to remember
@@ -220,7 +221,7 @@ def trainNetwork(q_network, sess):
     while "flappy bird" != "angry bird":
 
         if (t == 10001):
-            t = 520001
+            t = 5880001
         target_network_update_flag = 'No'
         # choose an action epsilon greedily
         readout_t = q_network.readout.eval(feed_dict={q_network.s : [s_t]})[0]
@@ -303,7 +304,7 @@ def trainNetwork(q_network, sess):
                 # q_network.a : indices,
                 q_network.s : currentState_batch}
             )
-        if (t%1000) == 0 and t>0:
+        if (t%TARGET_UPDATE_THRESHOLD) == 0 and t>0:
             q_network.update()
             target_network_update_flag = 'Yes'
             # with open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + outputFile, 'a') as fout:

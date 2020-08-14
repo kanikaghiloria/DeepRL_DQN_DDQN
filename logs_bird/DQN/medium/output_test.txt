@@ -202,3 +202,5 @@ TIMESTEP: 709107/ GAME: 98/ ACTION: 0/ FINAL SCORE: 476
 TIMESTEP: 714823/ GAME: 99/ ACTION: 0/ FINAL SCORE: 153
 TIMESTEP: 719913/ GAME: 100/ ACTION: 0/ FINAL SCORE: 136
 Total TIMESTEP: 719913/ total Games: 100/ Maximum Score: 751/ Minimum Score: 8/ Average Score: 193.11
+================================= NEW EVALUATION =================================
+TIMESTEP: 75343/ GAME: 1/ ACTION: 0/ FINAL SCORE: 2035

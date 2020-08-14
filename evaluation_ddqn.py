@@ -22,20 +22,18 @@ outStatement = ''
 
 GAME = 'bird' # the name of the game being played for log files
 AGENT = 'doubleDQN'
-DIFFICULTY = 'hard'
+DIFFICULTY = 'medium'
+test_env = True
 ACTIONS = 2 # number of valid actions
 # GAMMA = 0.99 # decay rate of past observations
-NUMEBEROFGAMES = 100
-############################### UNCOMMENT THIS SECTION FOR TESTING
-# OBSERVE = 1000000. # timesteps to observe before training
-# EXPLORE = 2000000. # frames over which to anneal epsilon
-# FINAL_EPSILON = 0.0001 # final value of epsilon
-# INITIAL_EPSILON = 0.0001 # starting value of epsilon
-outputFile = "/output_test.txt"
-# a_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/readout_test.txt", 'a+')
-# h_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/hidden_test.txt", 'a+')
-out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output_test.txt", 'a+')
-###############################
+NUMEBEROFGAMES = 50
+
+if(test_env):
+    outputFile = "/output_test_env.txt"
+    out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output_test_env.txt", 'a+')
+else:
+    outputFile = "/output_test.txt"
+    out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output_test.txt", 'a+')
 
 FRAME_PER_ACTION = 1
 
@@ -167,7 +165,7 @@ def evaluate(q_network, sess):
         fout.writelines("\n")
 
     # open up a game state to communicate with emulator
-    game_state = game.GameState(difficulty=DIFFICULTY)
+    game_state = game.GameState(difficulty=DIFFICULTY, test_env=test_env)
 
     # get the first state by doing nothing and preprocess the image to 80x80x4
     do_nothing = np.zeros(ACTIONS)
@@ -195,7 +193,7 @@ def evaluate(q_network, sess):
     scores = []
     currentGame = 1
     # while "flappy bird" != "angry bird":
-    while currentGame <= NUMEBEROFGAMES:
+    while currentGame <= NUMEBEROFGAMES and t < 2100000:
 
         readout_t = q_network.readout.eval(feed_dict={q_network.s : [s_t]})[0]
         a_t = np.zeros([ACTIONS])
@@ -233,7 +231,7 @@ def evaluate(q_network, sess):
     maxScore = max(scores)
     minScore = min(scores)
     meanScore = mean(scores)
-    lastOutStatement = "Total TIMESTEP: ", str(t), "/ total Games: ", str(NUMEBEROFGAMES), "/ Maximum Score: ", \
+    lastOutStatement = "Total TIMESTEP: ", str(t), "/ total Games: ", str(currentGame), "/ Maximum Score: ", \
                    str(maxScore), "/ Minimum Score: ", str(minScore), "/ Average Score: ", str(meanScore), "\n"
 
     with open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + outputFile, 'a') as fout:

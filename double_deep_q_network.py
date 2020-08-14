@@ -20,7 +20,8 @@ outStatement = ''
 
 GAME = 'bird' # the name of the game being played for log files
 AGENT = 'doubleDQN'
-DIFFICULTY = 'hard'
+DIFFICULTY = 'general'
+test_env = False
 ACTIONS = 2 # number of valid actions
 GAMMA = 0.99 # decay rate of past observations
 
@@ -180,7 +181,7 @@ def trainNetwork(q_network, sess):
     # train_step = tf.train.AdamOptimizer(1e-6).minimize(cost)
 
     # open up a game state to communicate with emulator
-    game_state = game.GameState(difficulty=DIFFICULTY)
+    game_state = game.GameState(difficulty=DIFFICULTY, test_env=test_env)
 
     # store the previous observations in replay memory
     experienceReplay = deque()
@@ -220,7 +221,7 @@ def trainNetwork(q_network, sess):
     while "flappy bird" != "angry bird":
 
         if (t == 10001):
-            t = 6050001
+            t = 6200001
         target_network_update_flag = 'No'
         # choose an action epsilon greedily
         readout_t = q_network.readout.eval(feed_dict={q_network.s : [s_t]})[0]

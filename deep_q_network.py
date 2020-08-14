@@ -20,31 +20,32 @@ outStatement = ''
 
 GAME = 'bird' # the name of the game being played for log files
 ACTIONS = 2 # number of valid actions
-GAMMA = 0.99 # decay rate of past observations
-DIFFICULTY = 'general'
+DIFFICULTY = 'medium'
 AGENT = 'DQN'
+test_env = False
 
 ############################### UNCOMMENT THIS SECTION FOR TESTING
-OBSERVE = 1000000. # timesteps to observe before training
-EXPLORE = 2000000. # frames over which to anneal epsilon
-FINAL_EPSILON = 0.0001 # final value of epsilon
-INITIAL_EPSILON = 0.0001 # starting value of epsilon
-outputFile = "/output_test.txt"
-a_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/readout_test.txt", 'a+')
-h_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/hidden_test.txt", 'a+')
-out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output_test.txt", 'a+')
+# OBSERVE = 1000000. # timesteps to observe before training
+# EXPLORE = 2000000. # frames over which to anneal epsilon
+# FINAL_EPSILON = 0.0001 # final value of epsilon
+# INITIAL_EPSILON = 0.0001 # starting value of epsilon
+# outputFile = "/output_test.txt"
+# # a_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/readout_test.txt", 'a+')
+# # h_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/hidden_test.txt", 'a+')
+# out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output_test.txt", 'a+')
 ###############################
 
 # printing
-# outputFile = "/output.txt"
+outputFile = "/output.txt"
 # a_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/readout.txt", 'a+')
 # h_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/hidden.txt", 'a+')
-# out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output.txt", 'a+')
-# OBSERVE = 10000
-# EXPLORE = 3000000
-# FINAL_EPSILON = 0.0001
+out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output.txt", 'a+')
+OBSERVE = 10000
+EXPLORE = 3000000
+GAMMA = 0.99 # decay rate of past observations
+FINAL_EPSILON = 0.0001
 # INITIAL_EPSILON = 0.1
-# # INITIAL_EPSILON = 0.00009999999983673486
+INITIAL_EPSILON = 0.09835418080031758
 REPLAY_MEMORY = 50000 # number of previous transitions to remember
 BATCH = 32 # size of minibatch
 FRAME_PER_ACTION = 1
@@ -112,7 +113,7 @@ def trainNetwork(s, readout, h_fc1, sess):
     train_step = tf.train.AdamOptimizer(1e-6).minimize(cost)
 
     # open up a game state to communicate with emulator
-    game_state = game.GameState(difficulty=DIFFICULTY)
+    game_state = game.GameState(difficulty=DIFFICULTY, test_env=test_env)
 
     # store the previous observations in replay memory
     D = deque()
@@ -142,7 +143,10 @@ def trainNetwork(s, readout, h_fc1, sess):
     random_action = 0
     t = 0
     while "flappy bird" != "angry bird":
+    # while (t<2950001):
         # choose an action epsilon greedily
+        if (t == 10001):
+            t = 2240001
         readout_t = readout.eval(feed_dict={s : [s_t]})[0]
         a_t = np.zeros([ACTIONS])
         action_index = 0
@@ -245,8 +249,8 @@ def trainNetwork(s, readout, h_fc1, sess):
                 fout.writelines(outStatement)
 
         if t % 10000 <= 100:
-            a_file.write(",".join([str(x) for x in readout_t]) + '\n')
-            h_file.write(",".join([str(x) for x in h_fc1.eval(feed_dict={s:[s_t]})[0]]) + '\n')
+            # a_file.write(",".join([str(x) for x in readout_t]) + '\n')
+            # h_file.write(",".join([str(x) for x in h_fc1.eval(feed_dict={s:[s_t]})[0]]) + '\n')
 
             cv2.imwrite("logs_tetris/frame" + str(t) + ".png", x_t1)
 

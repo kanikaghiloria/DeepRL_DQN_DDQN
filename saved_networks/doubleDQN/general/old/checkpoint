@@ -1,6 +1,0 @@
-model_checkpoint_path: "bird-dqn_target-170000"
-all_model_checkpoint_paths: "bird-dqn_target-130000"
-all_model_checkpoint_paths: "bird-dqn_target-140000"
-all_model_checkpoint_paths: "bird-dqn_target-150000"
-all_model_checkpoint_paths: "bird-dqn_target-160000"
-all_model_checkpoint_paths: "bird-dqn_target-170000"

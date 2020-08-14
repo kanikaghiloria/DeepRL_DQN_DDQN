@@ -23,15 +23,18 @@ outStatement = ''
 GAME = 'bird' # the name of the game being played for log files
 ACTIONS = 2 # number of valid actions
 GAMMA = 0.99 # decay rate of past observations
-DIFFICULTY = 'hard'
+DIFFICULTY = 'medium'
 AGENT = 'DQN'
-NUMEBEROFGAMES = 100
-
-############################### UNCOMMENT THIS SECTION FOR TESTING
-outputFile = "/output_test.txt"
-# a_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/readout_test.txt", 'a+')
-# h_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/hidden_test.txt", 'a+')
-out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output_test.txt", 'a+')
+NUMEBEROFGAMES = 50
+test_env = False
+if(test_env):
+    outputFile = "/output_test_env.txt"
+    out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output_test_env.txt", 'a+')
+else:
+    outputFile = "/output_test.txt"
+    # a_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/readout_test.txt", 'a+')
+    # h_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/hidden_test.txt", 'a+')
+    out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output_test.txt", 'a+')
 ###############################
 
 FRAME_PER_ACTION = 1
@@ -104,7 +107,7 @@ def evaluate(s, readout, h_fc1, sess):
     train_step = tf.train.AdamOptimizer(1e-6).minimize(cost)
 
     # open up a game state to communicate with emulator
-    game_state = game.GameState(difficulty=DIFFICULTY)
+    game_state = game.GameState(difficulty=DIFFICULTY, test_env=test_env)
 
     do_nothing = np.zeros(ACTIONS)
     do_nothing[0] = 1
@@ -130,7 +133,7 @@ def evaluate(s, readout, h_fc1, sess):
     scores = []
     currentGame = 1
     # while "flappy bird" != "angry bird":
-    while currentGame <= NUMEBEROFGAMES:
+    while currentGame <= NUMEBEROFGAMES and t < 2100000:
         # choose an action epsilon greedily
         readout_t = readout.eval(feed_dict={s : [s_t]})[0]
         a_t = np.zeros([ACTIONS])
@@ -175,6 +178,7 @@ def evaluate(s, readout, h_fc1, sess):
                        str(maxScore), "/ Minimum Score: ", str(minScore), "/ Average Score: ", str(meanScore), "\n"
     with open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + outputFile, 'a') as fout:
         fout.writelines(lastOutStatement)
+    print(lastOutStatement)
 
 
 
