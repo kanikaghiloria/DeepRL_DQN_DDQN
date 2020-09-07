@@ -20,7 +20,7 @@ outStatement = ''
 
 GAME = 'bird' # the name of the game being played for log files
 ACTIONS = 2 # number of valid actions
-DIFFICULTY = 'medium'
+DIFFICULTY = 'general'
 AGENT = 'DQN'
 test_env = False
 
@@ -45,7 +45,7 @@ EXPLORE = 3000000
 GAMMA = 0.99 # decay rate of past observations
 FINAL_EPSILON = 0.0001
 # INITIAL_EPSILON = 0.1
-INITIAL_EPSILON = 0.09835418080031758
+INITIAL_EPSILON = 0.00009999999973371731
 REPLAY_MEMORY = 50000 # number of previous transitions to remember
 BATCH = 32 # size of minibatch
 FRAME_PER_ACTION = 1
@@ -146,7 +146,7 @@ def trainNetwork(s, readout, h_fc1, sess):
     # while (t<2950001):
         # choose an action epsilon greedily
         if (t == 10001):
-            t = 2240001
+            t = 8526336
         readout_t = readout.eval(feed_dict={s : [s_t]})[0]
         a_t = np.zeros([ACTIONS])
         action_index = 0

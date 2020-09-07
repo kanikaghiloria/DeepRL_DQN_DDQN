@@ -22,11 +22,11 @@ outStatement = ''
 
 GAME = 'bird' # the name of the game being played for log files
 AGENT = 'doubleDQN'
-DIFFICULTY = 'medium'
-test_env = True
+DIFFICULTY = 'general'
+test_env = False
 ACTIONS = 2 # number of valid actions
 # GAMMA = 0.99 # decay rate of past observations
-NUMEBEROFGAMES = 50
+NUMEBEROFGAMES = 100
 
 if(test_env):
     outputFile = "/output_test_env.txt"
@@ -193,7 +193,8 @@ def evaluate(q_network, sess):
     scores = []
     currentGame = 1
     # while "flappy bird" != "angry bird":
-    while currentGame <= NUMEBEROFGAMES and t < 2100000:
+    # while currentGame <= NUMEBEROFGAMES and t < 2100000:
+    while currentGame <= NUMEBEROFGAMES:
 
         readout_t = q_network.readout.eval(feed_dict={q_network.s : [s_t]})[0]
         a_t = np.zeros([ACTIONS])

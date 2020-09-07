@@ -23,10 +23,10 @@ outStatement = ''
 GAME = 'bird' # the name of the game being played for log files
 ACTIONS = 2 # number of valid actions
 GAMMA = 0.99 # decay rate of past observations
-DIFFICULTY = 'medium'
+DIFFICULTY = 'general'
 AGENT = 'DQN'
 NUMEBEROFGAMES = 50
-test_env = False
+test_env = True
 if(test_env):
     outputFile = "/output_test_env.txt"
     out_file = open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + "/output_test_env.txt", 'a+')
@@ -174,7 +174,7 @@ def evaluate(s, readout, h_fc1, sess):
     maxScore = max(scores)
     minScore = min(scores)
     meanScore = mean(scores)
-    lastOutStatement = "Total TIMESTEP: ", str(t), "/ total Games: ", str(NUMEBEROFGAMES), "/ Maximum Score: ", \
+    lastOutStatement = "Total TIMESTEP: ", str(t), "/ total Games: ", str(currentGame), "/ Maximum Score: ", \
                        str(maxScore), "/ Minimum Score: ", str(minScore), "/ Average Score: ", str(meanScore), "\n"
     with open("logs_" + GAME + "/" + AGENT + "/" + DIFFICULTY + outputFile, 'a') as fout:
         fout.writelines(lastOutStatement)
